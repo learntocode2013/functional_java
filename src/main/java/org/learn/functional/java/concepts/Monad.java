@@ -1,17 +1,21 @@
 package org.learn.functional.java.concepts;
 
+import com.google.common.flogger.FluentLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Level;
+
+import static java.util.logging.Level.*;
 
 class Monad {
     static final List<String> FPDEV_NAMES = List.of(
             "Ted Neward", "Martin Fowler", "Adam Bien", "Dibakar","Victor Rantea"
     );
-    private final Logger logger = LoggerFactory.getLogger(Monad.class.getSimpleName());
+    static private final FluentLogger logger = FluentLogger.forEnclosingClass();
     private final Map<String, Person> personMap;
 
     Monad() {
@@ -27,7 +31,7 @@ class Monad {
     }
 
     private void process(String devName, City city) {
-        logger.info("{} works in {}",devName, city.getName());
+        logger.at(INFO).log("%s works in %s",devName, city.getName());
     }
 
     private Optional<Person> findFpDev(String name) {

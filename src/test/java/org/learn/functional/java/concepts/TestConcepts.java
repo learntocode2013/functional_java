@@ -1,5 +1,6 @@
 package org.learn.functional.java.concepts;
 
+import com.google.common.flogger.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.learn.functional.java.Customer;
@@ -9,16 +10,18 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.logging.Level;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.learn.functional.java.concepts.Applicative.*;
 
 class TestConcepts {
-    private final Logger logger = LoggerFactory.getLogger(TestConcepts.class.getSimpleName());
+    static private final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     @Test
     @DisplayName("Demonstrates usage of an applicative")
     void demoApplicative() {
+        logger.at(Level.INFO).log("Demonstrating usage of %s", "demoApplicative");
         String[] parts = { "demo", "applicative" };
         Customer cashUser = new Customer("Victor Rantea");
         Customer aCardUser = new Customer("Dibakar");

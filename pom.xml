@@ -25,6 +25,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <slf4jVersion>1.7.21</slf4jVersion>
+    <floggerVersion>0.4</floggerVersion>
   </properties>
 
   <dependencies>
@@ -46,6 +47,20 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-simple</artifactId>
           <version>${slf4jVersion}</version>
+      </dependency>
+
+      <!-- Experimenting new logging framework from Google -->
+      <dependency>
+          <groupId>com.google.flogger</groupId>
+          <artifactId>flogger</artifactId>
+          <version>${floggerVersion}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>com.google.flogger</groupId>
+          <artifactId>flogger-system-backend</artifactId>
+          <version>${floggerVersion}</version>
+          <scope>compile</scope>
       </dependency>
 
       <!-- Included to handle checked exception inside lambda functions -->
