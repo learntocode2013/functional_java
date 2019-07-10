@@ -21,3 +21,15 @@ in an utility, thus avoiding code duplication. Refer to the classes:
  Refer to the code examples below:
  
     - Timing.java
+
+4. Functional approach to common problems
+
+Problem | Imperative approach | Functional approach | Examples to refer
+--------| ------------------- | ------------------- | -----------------
+Validate/assert input to a function | Throw unchecked exception if input is invalid | In functional programming, you don’t throw exceptions; <br> you use special contexts such as `Result` for error handling | TestAssertions.java
+    
+ _**References**_
+ 
+ Github link|Author
+ -----------|------
+ https://github.com/fpinjava/fpinjava/blob/master/fpinjava-parent | Pierre-Yves Saumont
