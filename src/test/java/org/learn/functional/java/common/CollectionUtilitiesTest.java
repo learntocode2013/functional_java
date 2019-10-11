@@ -36,6 +36,6 @@ class CollectionUtilitiesTest {
         String actual = fold(strings, identity, x -> y -> x + y);
         String actualRight = foldRight(strings, identity, x -> y -> x + y);
         assertEquals(expected, actual, "Fold operation is not working for string join");
-        assertEquals("rakabid", actualRight);
+        assertEquals(expected, actualRight);
     }
 }
