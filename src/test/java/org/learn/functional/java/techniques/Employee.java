@@ -1,4 +1,4 @@
-package org.learn.functional.java.techniques.assertions;
+package org.learn.functional.java.techniques;
 
 public class Employee {
     private final int id;

@@ -1,6 +1,6 @@
-package org.learn.functional.java.techniques.assertions;
+package org.learn.functional.java.techniques;
 
-import org.learn.functional.java.common.Result;
+import org.learn.functional.java.types.Result;
 
 public class Assertion {
     public static boolean isPositive(int i) {

@@ -1,16 +1,14 @@
-package org.learn.functional.java.techniques.assertions;
+package org.learn.functional.java.techniques;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.learn.functional.java.common.Result;
-import org.learn.functional.java.concepts.Person;
+import org.learn.functional.java.types.Result;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.learn.functional.java.techniques.assertions.Assertion.*;
+import static org.learn.functional.java.techniques.Assertion.*;
 
 class TestAssertions {
     static private final Map<String, String> invalidKeyVals = new HashMap<>(){{

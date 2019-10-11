@@ -1,4 +1,4 @@
-package org.learn.functional.java.common;
+package org.learn.functional.java.types;
 
 import java.io.Serializable;
 import java.util.function.Function;
@@ -10,8 +10,12 @@ public abstract class Result<T> implements Serializable {
     public abstract T getOrElse(T defaultVal);
     public abstract T successValue();
     public abstract RuntimeException failureValue();
+    public abstract void forEach(Effect<T> e);
+    public abstract void bind(Effect<T> success, Effect<String> failure);
+    public abstract Result<String> forEachOrFail(Effect<T> e);
     public abstract <U> Result<U> map(Function<T, U> f);
     public abstract <U> Result<U> flatMap(Function<T, Result<U>> f);
+    public abstract Result<T> mapFailure(String s);
     public static <T> Empty<T> empty() { return new Empty<>(); }
     public static <T> Result<T> success(T val) {
         return new Success<>(val);
@@ -35,6 +39,10 @@ public abstract class Result<T> implements Serializable {
             String errMessage = "Failed to execute predicate for " + value + " due to: " + cause.getMessage();
             return Result.failure(errMessage, cause);
         }
+    }
+
+    public static <T> Result<T> of(T val) {
+        return val != null ? success(val) : failure("No value");
     }
 
     private static class Empty<T> extends Result<T> {
@@ -73,6 +81,21 @@ public abstract class Result<T> implements Serializable {
         }
 
         @Override
+        public void forEach(Effect<T> e) {
+            // do nothing
+        }
+
+        @Override
+        public void bind(Effect<T> success, Effect<String> failure) {
+            // do nothing
+        }
+
+        @Override
+        public Result<String> forEachOrFail(Effect<T> e) {
+            return empty();
+        }
+
+        @Override
         public <U> Result<U> map(Function<T, U> f) {
             return empty();
         }
@@ -81,7 +104,16 @@ public abstract class Result<T> implements Serializable {
         public <U> Result<U> flatMap(Function<T, Result<U>> f) {
             return empty();
         }
+
+        @Override
+        public Result<T> mapFailure(String s) {
+            return failure(s);
+        }
+
+        @Override
+        public String toString() { return "Empty"; }
     }
+
     private static class Success<T> extends Result<T> {
         private final T val;
 
@@ -121,6 +153,22 @@ public abstract class Result<T> implements Serializable {
         }
 
         @Override
+        public void forEach(Effect<T> e) {
+            e.apply(successValue());
+        }
+
+        @Override
+        public void bind(Effect<T> success, Effect<String> failure) {
+            success.apply(successValue());
+        }
+
+        @Override
+        public Result<String> forEachOrFail(Effect<T> e) {
+            e.apply(successValue());
+            return empty();
+        }
+
+        @Override
         public <U> Result<U> map(Function<T, U> f) {
             try {
                 return success(f.apply(successValue()));
@@ -137,6 +185,14 @@ public abstract class Result<T> implements Serializable {
                 return failure(cause.getMessage(), cause);
             }
         }
+
+        @Override
+        public Result<T> mapFailure(String s) {
+            return this;
+        }
+
+        @Override
+        public String toString() { return "Success"; }
     }
 
     private static class Failure<T> extends Empty<T> {
@@ -185,5 +241,21 @@ public abstract class Result<T> implements Serializable {
         public <U> Result<U> map(Function<T,U> f) {
             return failure(this);
         }
+
+        public Result<String> forEachOrFail(Effect<T> e) {
+            return success(exception.getMessage());
+        }
+
+        public Result<T> mapFailure(String s) {
+            return failure(s, exception);
+        }
+
+        @Override
+        public void bind(Effect<T> success, Effect<String> failure) {
+            failure.apply(exception.getMessage());
+        }
+
+        @Override
+        public String toString() { return "Failure"; }
     }
 }
