@@ -3,6 +3,7 @@ package org.learn.functional.java.common;
 import org.learn.functional.java.types.Result;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -50,26 +51,36 @@ public class CollectionUtilities {
         return workList;
     }
 
-    public static <T> List<T> append(List<T> source, T elem) {
-        List<T> workList = copy(source);
-        workList.add(elem);
-        return Collections.unmodifiableList(workList);
-    }
-
-    public static <T> T fold(List<T> source, T identity,
-                               Function<T, Function<T, T>> fn) {
-        T result = identity;
+    public static <T,U> U foldLeft(Collection<T> source, U identity,
+                                   Function<U, Function<T, U>> fn) {
+        U result = identity;
         for (T elem : source) {
             result = fn.apply(result).apply(elem);
         }
         return result;
     }
 
-    public static <T> T foldRight(List<T> source, T identity, Function<T, Function<T, T>> fn) {
-        T result = identity;
+    public static <T,U> U foldRight(List<T> source, U identity, Function<T, Function<U, U>> fn) {
+        U result = identity;
         for (int i = source.size() - 1; i >= 0; i--) {
             result = fn.apply(source.get(i)).apply(result);
         }
         return result;
+    }
+
+    public static <T> List<T> append(List<T> source, T elem) {
+        List<T> workList = copy(source);
+        workList.add(elem);
+        return Collections.unmodifiableList(workList);
+    }
+
+    public static <T> List<T> prepend(T elem, List<T> target) {
+        List<T> result = foldLeft(target, list(elem), a -> b -> append(a, b));
+        return Collections.unmodifiableList(result);
+    }
+
+    public static <T> List<T> reverse(List<T> source) {
+        List<T> result = foldRight(source, list(), a -> b -> append(b, a));
+        return Collections.unmodifiableList(result);
     }
 }

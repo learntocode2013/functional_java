@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.learn.functional.java.concepts.Applicative.*;
 
@@ -39,6 +41,20 @@ class TestConcepts {
         testSubject.printWorkCityOfFpDev(Monad.FPDEV_NAMES.get(1));
         // This prints nothing. Observe how fail-safe it is
         testSubject.printWorkCityOfFpDev(Monad.FPDEV_NAMES.get(3));
+    }
+
+    @Test
+    @DisplayName("Demonstrate transformation with function composition instead of composing transformations")
+    void demoFuncComposition() {
+        Function<Double, Double> addTax = price -> price + (0.09 * price);
+        Function<Double, Double> addShipping = priceWithTax -> priceWithTax + 3.50;
+        var priceList = List.of(120.34,200.43,400.23,599.90);
+        var finalPriceList = priceList.stream()
+                .map(price -> addTax.andThen(addShipping).apply(price)).collect(toList());
+        for (int i = 0; i < priceList.size(); i++) {
+            logger.at(Level.INFO).log("Mrp: %f | Final price: %f", priceList.get(i),
+                    finalPriceList.get(i));
+        }
     }
 
     private void cardUserWithoutDiscountFunc(Customer aCardUser) {
