@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.learn.functional.java.Customer;
 import org.learn.functional.java.MemberCard;
+import org.learn.functional.java.collectors.GroupByFirstCharacterCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,6 +58,15 @@ class TestConcepts {
             logger.at(Level.INFO).log("Mrp: %f | Final price: %f", priceList.get(i),
                     finalPriceList.get(i));
         }
+    }
+
+    @Test
+    void demo_custom_collector_groupByFirstCharacter() {
+        var groupedByFirstChar = Stream.of(
+                "Java", "Javascript", "Shell script", "Scala", "Golang", "Groovy"
+        ).collect(new GroupByFirstCharacterCollector());
+
+        System.out.println(groupedByFirstChar);
     }
 
     @Test
