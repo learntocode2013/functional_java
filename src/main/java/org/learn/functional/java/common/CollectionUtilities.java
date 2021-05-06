@@ -83,4 +83,14 @@ public class CollectionUtilities {
         List<T> result = foldRight(source, list(), a -> b -> append(b, a));
         return Collections.unmodifiableList(result);
     }
+
+    public static List<Integer> range(int startVal, int countLimit) {
+        var result = new ArrayList<Integer>();
+        Function<Integer, Integer> addOne = x -> x + 1;
+        result.add(startVal);
+        for (int i = 1; i < countLimit; i++) {
+            result.add(addOne.apply(result.get(i-1)));
+        }
+        return result;
+    }
 }

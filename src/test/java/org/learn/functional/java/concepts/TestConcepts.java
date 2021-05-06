@@ -8,6 +8,7 @@ import org.learn.functional.java.MemberCard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -55,6 +56,56 @@ class TestConcepts {
             logger.at(Level.INFO).log("Mrp: %f | Final price: %f", priceList.get(i),
                     finalPriceList.get(i));
         }
+    }
+
+    @Test
+    void demo_custom_collector_insteadOfStreamingTwice() {
+        var productInventory = List.of(
+                new Product(1L,"iPhone-12S", BigDecimal.valueOf(90_000)),
+                new Product(2L, "Das Mechanical Keyboard", BigDecimal.valueOf(25_000))
+        );
+
+        Cart shoppingCart = new Cart();
+        // Add some products to the shopping cart
+        productInventory.forEach(p -> shoppingCart.add(p,2));
+
+        // Display the cart before final payment.
+        var priceAndRows = shoppingCart.getProducts()
+                .entrySet()
+                .stream()
+                .collect(new PriceAndRowsCollector());
+        assertNotNull(priceAndRows);
+        // Some custom UI logic
+        displayCartDetails_BeforePayment(priceAndRows);
+    }
+
+    private void displayCartDetails_BeforePayment(PriceAndRows priceAndRows) {
+        System.out.println("----- Confirm order details ------");
+        priceAndRows.getRows().forEach(r -> System.out.printf("%s(%d) x %d = %d %n",
+                r.product().getLabel(),
+                r.product().getPrice().intValue(),
+                r.quantity(),
+                r.getRowPrice().intValue()));
+        System.out.println("----------------------------------");
+        System.out.printf("Total: %d \n", priceAndRows.getPrice().intValue());
+    }
+
+    @Test
+    @DisplayName("Demonstrates the conversion of a 3 parameter method call to method reference")
+    void demoMethodReferenceWith_ThreeParams_PassThroughType() {
+        assertNotEquals(0,process(this::addThreeNums));
+        logger.at(Level.INFO).log("Result from method reference: %d ",
+                process(this::addThreeNums));
+    }
+
+    private int process(TriFunction<Integer,Integer,Integer,Integer> func) {
+        return func.apply(
+                1,
+                2,
+                3);
+    }
+    private int addThreeNums(int one, int two, int three) {
+        return one + two + three;
     }
 
     private void cardUserWithoutDiscountFunc(Customer aCardUser) {
