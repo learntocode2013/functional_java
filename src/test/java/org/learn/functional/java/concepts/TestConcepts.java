@@ -1,13 +1,11 @@
 package org.learn.functional.java.concepts;
 
-import com.google.common.flogger.*;
+import com.google.common.flogger.FluentLogger;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.learn.functional.java.Customer;
 import org.learn.functional.java.MemberCard;
 import org.learn.functional.java.collectors.GroupByFirstCharacterCollector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,9 +14,12 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.learn.functional.java.concepts.Applicative.*;
+import static java.util.stream.Collectors.toList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.learn.functional.java.concepts.Applicative.DEFAULT_DISCOUNT_PERCENTAGE;
+import static org.learn.functional.java.concepts.Applicative.DISCOUNT_LINE_TEMPLATE;
 
 class TestConcepts {
     static private final FluentLogger logger = FluentLogger.forEnclosingClass();
@@ -67,6 +68,33 @@ class TestConcepts {
         ).collect(new GroupByFirstCharacterCollector());
 
         System.out.println(groupedByFirstChar);
+    }
+
+    @Test
+    void demo_teeing_collector_insteadOfStreamingTwice() {
+        var productInventory = List.of(
+                new Product(1L,"iPhone-12S", BigDecimal.valueOf(90_000)),
+                new Product(2L, "Das Mechanical Keyboard", BigDecimal.valueOf(25_000))
+        );
+
+        Cart shoppingCart = new Cart();
+
+        productInventory.forEach(product -> shoppingCart.add(product,2));
+
+        var priceAndRows = shoppingCart.getProducts()
+                .entrySet()
+                .stream()
+                .map(CartRow::new)
+                .collect(Collectors.teeing(
+                   Collectors.reducing(BigDecimal.ZERO,CartRow::getRowPrice,BigDecimal::add),
+                        Collectors.toList(),
+                        PriceAndRows::new
+                ));
+
+        assertNotNull(priceAndRows);
+
+        // Some custom UI logic
+        displayCartDetails_BeforePayment(priceAndRows);
     }
 
     @Test
